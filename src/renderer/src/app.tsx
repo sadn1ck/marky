@@ -5,12 +5,9 @@ export const App = () => {
   const [fileList, setFileList] = useState([] as { type: string; path: string; name: string }[])
   return (
     <section className="flex h-screen">
-      {/* <h1>Marky</h1>
-
-      <section>{state}</section> */}
       {/* file list component */}
       <ul className=" min-w-[220px] border border-border p-4">
-        <li className="bg-background/35 hover:bg-neutral-800 p-2 rounded-lg">
+        <li className="bg-background/35 hover:bg-background/85 p-2 rounded-lg">
           <button
             onClick={async () => {
               const result = await window.electron.ipcRenderer.invoke('open-folder')

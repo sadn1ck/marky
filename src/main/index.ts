@@ -1,8 +1,10 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { BrowserWindow, app, dialog, ipcMain, shell } from 'electron'
+import { createIPCHandler } from 'electron-trpc/main'
 import fs from 'node:fs'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
+import { router } from '../trpc/router'
 
 function createWindow(): BrowserWindow {
   // Create the browser window.
@@ -21,6 +23,8 @@ function createWindow(): BrowserWindow {
       contextIsolation: true
     }
   })
+
+  createIPCHandler({ router, windows: [mainWindow] })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
