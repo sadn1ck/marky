@@ -1,8 +1,11 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ipcLink } from 'electron-trpc/renderer'
 import { useState } from 'react'
+import { reactTrpcClient, vanillaTrpcClient } from './trpc/client'
 
-export const App = () => {
+export const Content = () => {
   const [currentFile, setCurrentFile] = useState('')
-  const [fileList, setFileList] = useState([] as { type: string; path: string; name: string }[])
+  const [fileList, setFileList] = useState([] as { type: string; name: string; fullPath: string }[])
   return (
     <section className="flex h-screen">
       {/* file list component */}
@@ -10,14 +13,16 @@ export const App = () => {
         <li className="bg-background/35 hover:bg-background/85 p-2 rounded-lg">
           <button
             onClick={async () => {
-              const result = await window.electron.ipcRenderer.invoke('open-folder')
-              console.log(result)
-              setFileList(result.children?.filter((child) => child.type !== 'directory') || [])
-              const fileContent = await window.electron.ipcRenderer.invoke('open-file', {
-                file: result.children?.filter((child) => child.type === 'file')[0]
-              })
-              console.log(fileContent)
-              setCurrentFile(fileContent)
+              const files = await vanillaTrpcClient.showDirectoryPicker.query()
+              // ^?
+              console.log(files)
+              if (files && !files.cancelled) {
+                setFileList(files!.list)
+                const fileContent = await vanillaTrpcClient.openFile.query({
+                  path: files!.list[0].fullPath
+                })
+                setCurrentFile(fileContent ?? '')
+              }
             }}
           >
             Open directory
@@ -25,14 +30,13 @@ export const App = () => {
         </li>
         <br />
         {fileList.map((file) => (
-          <li key={file.path}>
+          <li key={file.fullPath}>
             <button
               onClick={async () => {
-                const fileContent = await window.electron.ipcRenderer.invoke('open-file', {
-                  file
+                const fileContent = await vanillaTrpcClient.openFile.query({
+                  path: file.fullPath
                 })
-                console.log(fileContent)
-                setCurrentFile(fileContent)
+                setCurrentFile(fileContent ?? '')
               }}
             >
               {file.name}
@@ -46,5 +50,21 @@ export const App = () => {
         </pre>
       </div>
     </section>
+  )
+}
+
+export function App() {
+  const [queryClient] = useState(() => new QueryClient())
+  const [trpcClient] = useState(() =>
+    reactTrpcClient.createClient({
+      links: [ipcLink()]
+    })
+  )
+  return (
+    <reactTrpcClient.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <Content />
+      </QueryClientProvider>
+    </reactTrpcClient.Provider>
   )
 }
