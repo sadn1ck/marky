@@ -27,9 +27,30 @@ export const router = t.router({
       cancelled: true as const
     }
   }),
+  selectFiles: t.procedure.query(async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openFile', 'multiSelections'],
+      buttonLabel: 'Select files'
+    })
+    if (!result.canceled && result.filePaths.length > 0) {
+      console.log('selectFiles::', result)
+      return {
+        cancelled: false as const,
+        list: await fileSystemService.getFilesFromPaths(result.filePaths)
+      }
+    }
+    return {
+      cancelled: true as const
+    }
+  }),
   openFile: t.procedure.input(z.object({ path: z.string() })).query((req) => {
     return fileSystemService.openFile(req.input.path)
-  })
+  }),
+  saveFileContent: t.procedure
+    .input(z.object({ path: z.string(), content: z.string() }))
+    .mutation(async (req) => {
+      return await fileSystemService.writeFileContent(req.input.path, req.input.content)
+    })
 })
 
 export type AppRouter = typeof router

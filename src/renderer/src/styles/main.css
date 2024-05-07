@@ -52,4 +52,13 @@
   ::selection {
     background-color: rgba(var(--accent-color), 0.25);
   }
+
+  button {
+    all: unset;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
 }

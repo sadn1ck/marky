@@ -1,18 +1,19 @@
-import { BundledTheme, getHighlighter, Highlighter } from 'shiki'
+import { type BundledTheme, getHighlighter, type Highlighter } from 'shiki'
 import { $proseAsync } from '@milkdown/utils'
-import { Node } from '@milkdown/prose/model'
+import type { Node } from '@milkdown/prose/model'
 import { Plugin, PluginKey } from '@milkdown/prose/state'
 import { Decoration, DecorationSet } from '@milkdown/prose/view'
 import { findChildren } from '@milkdown/prose'
 import { codeBlockSchema } from '@milkdown/preset-commonmark'
-import { Ctx } from '@milkdown/ctx'
+import type { Ctx } from '@milkdown/ctx'
 
 const DARK_THEME: BundledTheme = 'vitesse-dark'
 const LIGHT_THEME: BundledTheme = 'vitesse-light'
 
 function getDecorations(doc: Node, highlighter: Highlighter, ctx: Ctx) {
   const decorations: Decoration[] = []
-
+  // slow on initial load
+  // TODO: figure out a way to lazily run this post initialization
   const children = findChildren((node) => node.type === codeBlockSchema.type(ctx))(doc)
 
   children.forEach(async (block) => {
@@ -27,7 +28,6 @@ function getDecorations(doc: Node, highlighter: Highlighter, ctx: Ctx) {
       }
     }).tokens
 
-    console.log(nodes)
     nodes.forEach((block) => {
       block.forEach((node) => {
         const to = from + node.content.length

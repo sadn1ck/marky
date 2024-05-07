@@ -54,13 +54,6 @@
     font-size: 13px;
   }
 
-  pre::before {
-    position: absolute;
-    content: attr(data-language);
-    top: 1rem;
-    right: 1rem;
-    opacity: 30%;
-  }
   pre {
     position: relative;
     font-size: 13px;
