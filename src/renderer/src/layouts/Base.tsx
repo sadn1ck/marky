@@ -28,9 +28,8 @@ const BaseLayout = (props: { Sidebar: React.ReactNode; ContentArea: React.ReactN
         console.error('missing filescontroller')
         return
       }
-      const result = await vanillaTrpcClient.selectFiles.query()
+      const result = await vanillaTrpcClient.selectFilesToOpen.query()
       if (!result.cancelled) {
-        console.log(result)
         filesController?.send({
           type: 'add.files',
           payload: {
@@ -43,12 +42,12 @@ const BaseLayout = (props: { Sidebar: React.ReactNode; ContentArea: React.ReactN
   )
 
   return (
-    <div className={clsx('flex h-screen')}>
-      <div>
+    <div className={clsx('flex h-full')}>
+      <div className="h-full">
         <aside
           data-state={isSidebarOpen ? 'open' : 'closed'}
           className={clsx(
-            'fixed w-[244px] h-full',
+            'fixed -left-0 top-4 w-[272px] flex flex-col h-full',
             'transition-transform duration-150 ease-out',
             'data-[state=open]:translate-x-0 data-[state=open]:translate-y-0',
             'data-[state=closed]:translate-y-4 data-[state=closed]:-translate-x-full'
@@ -59,16 +58,15 @@ const BaseLayout = (props: { Sidebar: React.ReactNode; ContentArea: React.ReactN
         <div
           data-state={isSidebarOpen ? 'open' : 'closed'}
           className={clsx(
-            'w-[244px] h-full',
+            'h-full',
             'transition-[width] duration-150 ease-out',
-            'data-[state=open]:w-[244px] data-[state=closed]:w-0',
-            'border-2 border-red-500'
+            'data-[state=open]:w-[272px] data-[state=closed]:w-0'
           )}
         >
           {isSidebarOpen}
         </div>
       </div>
-      <section className={clsx('grow overflow-y-scroll overflow-x-auto min-w-0')}>
+      <section className={clsx('grow overflow-y-scroll overflow-x-auto px-4 pt-8 pb-4')}>
         {props.ContentArea}
       </section>
     </div>

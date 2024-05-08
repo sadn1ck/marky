@@ -30,7 +30,9 @@
     --font-sans: 'Public Sans', sans-serif;
     --accent-color: 123, 104, 238;
     --text: 14, 14, 14;
+    --text-secondary: 9, 9, 9;
     --bg: 249, 249, 249;
+    --bg-secondary: 230, 230, 230;
     --monospace-font: 'Fira Code', monospace;
   }
 
@@ -38,7 +40,9 @@
     :root {
       --accent-color: 106, 90, 205;
       --text: 249, 249, 249;
+      --text-secondary: 160, 160, 160;
       --bg: 14, 14, 14;
+      --bg-secondary: 24, 24, 24;
     }
   }
 
@@ -46,7 +50,8 @@
     font-family: var(--font-sans);
     accent-color: rgb(var(--accent-color));
     color: rgb(var(--text));
-    background-color: rgb(var(--bg));
+    background: rgba(var(--bg), 0.8);
+    backdrop-filter: blur(4px);
   }
 
   ::selection {
@@ -60,5 +65,35 @@
   body {
     margin: 0;
     padding: 0;
+  }
+
+  #root {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contentarea {
+    max-width: 720px;
+    min-height: 100%;
+    margin: 0 auto !important;
+    text-rendering: optimizeLegibility;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+}
+
+@layer utilities {
+  /* hide scrollbar */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* electron window drag */
+  .electron-drag {
+    -webkit-app-region: drag;
+  }
+  .electron-no-drag {
+    -webkit-app-region: no-drag;
   }
 }

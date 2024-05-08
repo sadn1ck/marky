@@ -1,5 +1,6 @@
 import { is } from '@electron-toolkit/utils'
-import { BrowserWindow, BrowserWindowConstructorOptions, shell } from 'electron'
+import type { BrowserWindowConstructorOptions } from 'electron'
+import { BrowserWindow, shell } from 'electron'
 import { createIPCHandler } from 'electron-trpc/main'
 import { join } from 'node:path'
 import { router } from '../api/router'

@@ -12,22 +12,7 @@ export const router = t.router({
       message: `pong ${req.input.message}!`
     }
   }),
-  showDirectoryPicker: t.procedure.query(async () => {
-    const result = await dialog.showOpenDialog({
-      properties: ['openDirectory']
-    })
-    if (!result.canceled && result.filePaths.length > 0) {
-      console.log(`openDirectory`, result.filePaths[0])
-      return {
-        cancelled: false as const,
-        list: fileSystemService.getFileList(result.filePaths[0])
-      }
-    }
-    return {
-      cancelled: true as const
-    }
-  }),
-  selectFiles: t.procedure.query(async () => {
+  selectFilesToOpen: t.procedure.query(async () => {
     const result = await dialog.showOpenDialog({
       properties: ['openFile', 'multiSelections'],
       buttonLabel: 'Select files'
@@ -43,10 +28,11 @@ export const router = t.router({
       cancelled: true as const
     }
   }),
-  openFile: t.procedure.input(z.object({ path: z.string() })).query((req) => {
-    return fileSystemService.openFile(req.input.path)
+  openFileContents: t.procedure.input(z.object({ path: z.string() })).query((req) => {
+    const content = fileSystemService.openFile(req.input.path)
+    return content
   }),
-  saveFileContent: t.procedure
+  saveFileContents: t.procedure
     .input(z.object({ path: z.string(), content: z.string() }))
     .mutation(async (req) => {
       return await fileSystemService.writeFileContent(req.input.path, req.input.content)

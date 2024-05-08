@@ -3,23 +3,24 @@ import type { MarkyFile } from '../../../../types'
 import { useBootstrapChildren } from '../../hooks/use-bootstrap-children'
 import { reactTrpcClient } from '../../trpc/client'
 import { Editor } from '../Editor'
+import { useEffect } from 'react'
+import { NoFileOpened } from './no-file-opened'
+import { MarkdownLoading } from './loading'
 
 const ContentWrapper = ({ file }: { file: MarkyFile }) => {
-  const { data, isLoading } = reactTrpcClient.openFile.useQuery(
+  const { data, isLoading } = reactTrpcClient.openFileContents.useQuery(
     { path: file.fullPath },
     {
-      refetchOnMount: true,
-      refetchOnWindowFocus: true,
-      notifyOnChangeProps: ['data', 'isLoading']
+      refetchOnWindowFocus: false
     }
   )
-  console.log('content::', file.name, { isLoading })
+
   if (isLoading) {
-    return <div>loading...</div>
+    return <MarkdownLoading />
   }
   return (
     <>
-      <Editor key={file.fullPath + data} initialContent={data!} path={file.fullPath} />
+      <Editor key={data} initialContent={data!} path={file.fullPath} />
     </>
   )
 }
@@ -28,9 +29,13 @@ export const ContentArea = () => {
   const { filesController } = useBootstrapChildren()
   const [currentFile] = useSelector(filesController, (s) => [s?.context.currentFile ?? null])
 
+  useEffect(() => {
+    document.title = currentFile?.name ? `${currentFile.name} - Marky` : 'Marky'
+  }, [currentFile])
+
   switch (currentFile) {
     case null:
-      return <div>Please select a file or open a file</div>
+      return <NoFileOpened />
     default:
       return <ContentWrapper file={currentFile} />
   }

@@ -16,20 +16,22 @@ function getDecorations(doc: Node, highlighter: Highlighter, ctx: Ctx) {
   // TODO: figure out a way to lazily run this post initialization
   const children = findChildren((node) => node.type === codeBlockSchema.type(ctx))(doc)
 
-  children.forEach(async (block) => {
-    let from = block.pos + 1
-    const { language } = block.node.attrs
+  children.forEach(async (child) => {
+    let from = child.pos + 1
+    const { language } = child.node.attrs
     if (!language) return
-    const nodes = highlighter.codeToTokens(block.node.textContent, {
+    const { tokens: nodes } = highlighter.codeToTokens(child.node.textContent, {
       lang: language,
       themes: {
         dark: DARK_THEME,
         light: LIGHT_THEME
       }
-    }).tokens
+    })
 
     nodes.forEach((block) => {
+      // console.log('block', block)
       block.forEach((node) => {
+        // console.log('node', node.content)
         const to = from + node.content.length
         const decoration = Decoration.inline(from, to, {
           style: node.htmlStyle

@@ -6,6 +6,7 @@ import { BaseLayout } from './layouts/Base'
 import { bootstrapControllerContext } from './state/bootstrap'
 import { reactTrpcClient } from './trpc/client'
 import { ContentArea } from './components/ContentArea'
+import { WindowTitle } from './components/Titlebar'
 
 export function App() {
   const [queryClient] = useState(() => new QueryClient())
@@ -18,7 +19,7 @@ export function App() {
     <bootstrapControllerContext.Provider>
       <reactTrpcClient.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
-          {/* <Content /> */}
+          <WindowTitle />
           <BaseLayout Sidebar={<Sidebar />} ContentArea={<ContentArea />}></BaseLayout>
         </QueryClientProvider>
       </reactTrpcClient.Provider>

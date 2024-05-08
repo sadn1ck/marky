@@ -1,5 +1,6 @@
 import { type ActorRefFrom, assign, setup } from 'xstate'
-import type { MarkyFile } from '../../../types'
+import type { MarkyFile, Persisted } from '../../../types'
+import { MARKY_APP_KEY } from '../trpc/client'
 
 const filesController = setup({
   types: {
@@ -27,6 +28,15 @@ const filesController = setup({
             files: MarkyFile[]
           }
         }
+  },
+  actions: {
+    syncToLocalStorage: ({ context }) => {
+      const persist: Persisted<typeof context> = {
+        lastStoreAt: Date.now(),
+        data: context
+      }
+      localStorage.setItem(MARKY_APP_KEY, JSON.stringify(persist))
+    }
   }
 }).createMachine({
   context: {
@@ -34,33 +44,61 @@ const filesController = setup({
     lastOpenedFile: null,
     currentFile: null
   },
-  type: 'parallel',
+  initial: 'setup',
   states: {
-    files: {
-      on: {
-        'add.files': {
-          actions: [
-            assign({
-              files: ({ context, event }) => [...context.files, ...event.payload.files]
-            })
-          ]
-        },
-        'open.file': {
-          actions: [
-            assign({
-              currentFile: ({ event }) => event.payload.file,
-              lastOpenedFile: ({ event }) => event.payload.file
-            })
-          ]
-        },
-        'remove.file': {
-          actions: [
-            assign({
-              files: ({ context, event }) =>
-                context.files.filter((file) => file.fullPath !== event.payload.file.fullPath),
-              currentFile: null
-            })
-          ]
+    setup: {
+      entry: [
+        assign(({ context }) => {
+          const { data, lastStoreAt } = JSON.parse(
+            localStorage.getItem(MARKY_APP_KEY)!
+          ) as Persisted<typeof context>
+          console.log(`files::`, data, lastStoreAt)
+          if (lastStoreAt < Date.now()) {
+            return {
+              ...data
+            }
+          } else return context
+        })
+      ],
+      after: {
+        1: {
+          target: 'ready'
+        }
+      }
+    },
+    ready: {
+      type: 'parallel',
+      states: {
+        files: {
+          on: {
+            'add.files': {
+              actions: [
+                assign({
+                  files: ({ context, event }) => [...context.files, ...event.payload.files]
+                }),
+                'syncToLocalStorage'
+              ]
+            },
+            'open.file': {
+              actions: [
+                assign({
+                  currentFile: ({ event }) => event.payload.file,
+                  lastOpenedFile: ({ event }) => event.payload.file
+                }),
+                'syncToLocalStorage'
+              ]
+            },
+            'remove.file': {
+              actions: [
+                assign({
+                  files: ({ context, event }) =>
+                    context.files.filter((file) => file.fullPath !== event.payload.file.fullPath),
+                  currentFile: null
+                }),
+                'syncToLocalStorage'
+              ]
+            }
+          }
         }
       }
     }

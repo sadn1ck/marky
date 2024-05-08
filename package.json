@@ -28,6 +28,7 @@
     "@milkdown/ctx": "^7.3.6",
     "@milkdown/plugin-clipboard": "^7.3.6",
     "@milkdown/plugin-history": "^7.3.6",
+    "@milkdown/plugin-listener": "^7.3.6",
     "@milkdown/plugin-trailing": "^7.3.6",
     "@milkdown/preset-commonmark": "^7.3.6",
     "@milkdown/preset-gfm": "^7.3.6",

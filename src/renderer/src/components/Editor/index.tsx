@@ -1,7 +1,7 @@
 import { Editor as RootEditor, defaultValueCtx, rootCtx } from '@milkdown/core'
 import { clipboard } from '@milkdown/plugin-clipboard'
 import { history } from '@milkdown/plugin-history'
-import { trailing } from '@milkdown/plugin-trailing'
+import { trailing, trailingConfig } from '@milkdown/plugin-trailing'
 import { commonmark } from '@milkdown/preset-commonmark'
 import { gfm } from '@milkdown/preset-gfm'
 import { Milkdown, MilkdownProvider, useEditor } from '@milkdown/react'
@@ -37,6 +37,17 @@ export const MilkdownEditor = (props: Props) => {
       .use(commonmark)
       .use(gfm)
       .use(trailing)
+      .config((ctx) => {
+        const prev = ctx.get(trailingConfig.key)
+        ctx.set(trailingConfig.key, {
+          ...prev,
+          shouldAppend: (lastNode) => {
+            if (!lastNode) return false
+            if (lastNode.textContent.trim().length === 0) return false
+            return true
+          }
+        })
+      })
       .use(milkShiki)
       .config(customTheme)
   }, [])
