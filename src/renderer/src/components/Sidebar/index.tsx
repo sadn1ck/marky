@@ -44,7 +44,6 @@ export const Sidebar = () => {
             key={file.fullPath}
             className={clsx(
               'transition-colors duration-100',
-              'hover:bg-gray-600/30',
               'flex items-center gap-1',
               currentFile?.fullPath === file.fullPath
                 ? 'bg-gray-600/30 text-primary'
@@ -55,7 +54,7 @@ export const Sidebar = () => {
             <button
               onClick={() => filesController?.send({ type: 'open.file', payload: { file } })}
               className={clsx('w-full h-full p-1')}
-              title={`Open ${file.name}`}
+              title={file?.fullPath}
             >
               {truncateFileName(file.name)}
             </button>

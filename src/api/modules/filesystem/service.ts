@@ -16,9 +16,6 @@ class FileSystemService implements FileSystemContract {
     const stat = await readdir(path, {
       withFileTypes: true
     })
-    // const files = []
-    // TODO: impl folders
-    // const folders = []
     return stat
       .filter((direntry) => {
         const ignored = ignoredDirentries.has(direntry.name)
@@ -45,7 +42,9 @@ class FileSystemService implements FileSystemContract {
   }
 
   async openFile(path: string) {
-    const content = await readFile(path, 'utf8')
+    const content = await readFile(path, {
+      encoding: 'utf8'
+    })
     return content
   }
 

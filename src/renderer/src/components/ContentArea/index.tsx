@@ -1,11 +1,20 @@
+import type { EditorView } from '@codemirror/view'
 import { useSelector } from '@xstate/react'
+import { useEffect } from 'react'
 import type { MarkyFile } from '../../../../types'
 import { useBootstrapChildren } from '../../hooks/use-bootstrap-children'
-import { reactTrpcClient } from '../../trpc/client'
-import { Editor } from '../Editor'
-import { useEffect } from 'react'
-import { NoFileOpened } from './no-file-opened'
+import { reactTrpcClient, vanillaTrpcClient } from '../../trpc/client'
+import { MarkdownEditor } from '../Editor/MarkdownEditor'
 import { MarkdownLoading } from './loading'
+import { NoFileOpened } from './no-file-opened'
+
+const onSave = (path: string) => async (view: EditorView) => {
+  const markdown = view.state.sliceDoc()
+  await vanillaTrpcClient.saveFileContents.mutate({
+    path: path,
+    content: markdown
+  })
+}
 
 const ContentWrapper = ({ file }: { file: MarkyFile }) => {
   const { data, isLoading } = reactTrpcClient.openFileContents.useQuery(
@@ -20,7 +29,7 @@ const ContentWrapper = ({ file }: { file: MarkyFile }) => {
   }
   return (
     <>
-      <Editor key={data} initialContent={data!} path={file.fullPath} />
+      <MarkdownEditor onSave={onSave(file.fullPath)} key={data!} doc={{ content: data! }} />
     </>
   )
 }

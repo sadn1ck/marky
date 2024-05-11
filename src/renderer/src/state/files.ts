@@ -52,7 +52,7 @@ const filesController = setup({
           const { data, lastStoreAt } = JSON.parse(
             localStorage.getItem(MARKY_APP_KEY)!
           ) as Persisted<typeof context>
-          console.log(`files::`, data, lastStoreAt)
+          console.info(`[restored]`, data)
           if (lastStoreAt < Date.now()) {
             return {
               ...data

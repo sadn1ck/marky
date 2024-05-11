@@ -10,7 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         accent: {
-          DEFAULT: `rgb(var(--accent))`
+          DEFAULT: `rgb(var(--accent-color))`
         },
         gray: neutral
       },

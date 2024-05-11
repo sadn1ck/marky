@@ -33,7 +33,7 @@
     --text-secondary: 9, 9, 9;
     --bg: 249, 249, 249;
     --bg-secondary: 230, 230, 230;
-    --monospace-font: 'Fira Code', monospace;
+    --monospace-font: 'CommitMono Nerd Font', monospace;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -92,6 +92,7 @@
   /* electron window drag */
   .electron-drag {
     -webkit-app-region: drag;
+    z-index: 1;
   }
   .electron-no-drag {
     -webkit-app-region: no-drag;
