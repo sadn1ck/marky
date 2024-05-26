@@ -2,8 +2,8 @@ import { shallowEqual, useSelector } from '@xstate/react'
 import { clsx } from 'clsx'
 import fileicon from '../../assets/file.svg?raw'
 import mdicon from '../../assets/md.svg?raw'
-import txticon from '../../assets/txt.svg?raw'
 import trashicon from '../../assets/trash.svg?raw'
+import txticon from '../../assets/txt.svg?raw'
 import { useBootstrapChildren } from '../../hooks/use-bootstrap-children'
 import { Icon } from '../../layouts/Icon'
 
@@ -26,19 +26,14 @@ export const Sidebar = () => {
   const { filesController } = useBootstrapChildren()
   const [fileList, currentFile] = useSelector(
     filesController,
-    (s) => [s?.context.files ?? [], s?.context.currentFile ?? null],
+    (s) => [s?.context?.files ?? [], s?.context?.currentFile ?? null],
     shallowEqual
   )
 
   return (
     <nav className="p-4 pb-0 min-h-full">
       <span className="uppercase px-1 tracking-wider text-xs text-secondary">Files</span>
-      <ul
-        className="flex flex-col gap-[2px] mt-2 bg-secondary rounded-md overflow-clip text-sm"
-        style={{
-          height: 'calc(100% - 64px)'
-        }}
-      >
+      <ul className="flex flex-col gap-[2px] mt-2 rounded-md overflow-clip text-sm">
         {fileList.map((file) => (
           <li
             key={file.fullPath}

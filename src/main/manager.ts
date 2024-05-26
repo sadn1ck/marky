@@ -41,7 +41,6 @@ export class WindowManager {
     }
   }
 
-  // inject router later
   setupIPCHandler() {
     createIPCHandler({ router, windows: [this.mainWindow] })
   }

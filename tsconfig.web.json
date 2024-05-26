@@ -4,9 +4,11 @@
     "src/renderer/src/env.d.ts",
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.tsx",
+    "src/shared/**/*.ts",
     "src/preload/*.d.ts",
-    "src/api/**/*"
-, "src/types.ts"  ],
+    "src/api/**/*",
+    "src/types.ts"
+  ],
   "compilerOptions": {
     "composite": true,
     "jsx": "react-jsx",

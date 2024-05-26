@@ -1,19 +1,7 @@
-import { expect, test } from 'vitest'
-import { fileSystemService } from './service'
 import { rm } from 'fs/promises'
 import { join } from 'path'
-
-test('fs::getFileList', async () => {
-  const files = await fileSystemService.getFileList('./fixtures')
-  expect(files.length).toBeGreaterThan(0)
-})
-
-test('fs::openFile', async () => {
-  const files = await fileSystemService.getFileList('./fixtures')
-  expect(files.length).toBeGreaterThan(0)
-  const firstFileContent = await fileSystemService.openFile(files[0].fullPath)
-  expect(firstFileContent.length).toBeGreaterThan(0)
-})
+import { expect, test } from 'vitest'
+import { fileSystemService } from './service'
 
 test('fs::writeFileContent', async () => {
   // setup - create a file

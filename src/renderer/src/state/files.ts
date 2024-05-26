@@ -1,6 +1,6 @@
 import { type ActorRefFrom, assign, setup } from 'xstate'
 import type { MarkyFile, Persisted } from '../../../types'
-import { MARKY_APP_KEY } from '../trpc/client'
+import { MARKY_APP_KEY } from '../../../shared/utils'
 
 const filesController = setup({
   types: {
@@ -49,9 +49,9 @@ const filesController = setup({
     setup: {
       entry: [
         assign(({ context }) => {
-          const { data, lastStoreAt } = JSON.parse(
-            localStorage.getItem(MARKY_APP_KEY)!
-          ) as Persisted<typeof context>
+          const stored = localStorage.getItem(MARKY_APP_KEY)!
+          if (!stored) return context
+          const { data, lastStoreAt } = JSON.parse(stored) as Persisted<typeof context>
           console.log(`files::`, data, lastStoreAt)
           if (lastStoreAt < Date.now()) {
             return {

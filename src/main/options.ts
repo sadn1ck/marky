@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import icon from '../../resources/icon.png?asset'
 
 const options: BrowserWindowConstructorOptions = {
-  width: 1080,
+  width: 1280,
   height: 720,
   show: false,
   transparent: true,
@@ -15,7 +15,6 @@ const options: BrowserWindowConstructorOptions = {
     x: 16,
     y: 8
   },
-  autoHideMenuBar: true,
   ...(process.platform === 'linux' ? { icon } : {}),
   webPreferences: {
     preload: join(__dirname, '../preload/index.js'),
